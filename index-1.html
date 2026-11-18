@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Test - November 2026 | Computer Science - IBA Public School Sukkur</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1976d2;
+            --secondary-green: #388e3c;
+            --gradient-bg: linear-gradient(135deg, #f5f9fc 0%, #f0f7f4 100%);
+            --transparent-bg: transparent;
+            --text-color: #222222;
+            --border-radius: 8px;
+        }
+
+        /* Custom Cursor and Scrollbars */
+        body {
+            cursor: default;
+            background: var(--gradient-bg);
+            font-family: 'Times New Roman', Times, serif, sans-serif;
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Luxury Loader */
+        #loaderOverlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            color: #222;
+            transition: opacity 0.6s ease;
+        }
+
+        .loader-spinner {
+            width: 55px;
+            height: 55px;
+            border: 3px solid #ddd;
+            border-top: 3px solid #1976d2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Auth Modal */
+        #authModal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9998;
+        }
+
+        .auth-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            border-top: 4px solid var(--primary-blue);
+        }
+
+        .auth-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 12px;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 10px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: inherit;
+            background: transparent;
+            color: var(--text-color);
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: transparent;
+            border-bottom: 1px solid #d0d7de;
+            color: var(--text-color);
+            padding: 12px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo {
+            width: 35px;
+            height: 35px;
+            object-fit: contain;
+        }
+
+        .nav-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .timer-display {
+            background: transparent;
+            border: 1px solid #888;
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .btn {
+            background: transparent;
+            color: #1976d2;
+            border: 1px solid #1976d2;
+            padding: 6px 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-stop {
+            color: #c62828;
+            border-color: #c62828;
+        }
+        .btn-stop:hover {
+            background: #c62828;
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 900px;
+            margin: 25px auto;
+            padding: 0 15px;
+            flex: 1;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Header Card */
+        .header-card {
+            background: var(--transparent-bg);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .header-card img.center-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .header-card h1 {
+            margin: 2px 0;
+            font-size: 1.4rem;
+            color: var(--text-color);
+        }
+
+        .header-card h2 {
+            margin: 2px 0;
+            font-size: 0.95rem;
+            color: #444;
+            font-weight: normal;
+        }
+
+        .student-badge {
+            margin-top: 6px;
+            display: inline-block;
+            background: transparent;
+            border: 1px solid #666;
+            color: var(--text-color);
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+        }
+
+        /* Grid Section for Tutorial & Imagery */
+        .grid-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card-panel {
+            background: var(--transparent-bg);
+            border: 1px solid #d0d7de;
+            border-radius: var(--border-radius);
+            padding: 15px;
+        }
+
+        .card-panel h3 {
+            margin-top: 0;
+            color: var(--text-color);
+            font-size: 1rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* Video Player */
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%;
+            background: #000;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .video-container video {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .video-controls {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .video-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid #aaa;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: inherit;
+        }
+        .video-btn:hover {
+            background: #eaeaea;
+        }
+
+        /* Motivational Imagery */
+        .motivation-content {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .motivation-img {
+            width: 100%;
+            max-height: 140px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .motivation-quote {
+            font-style: italic;
+            color: #333;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Quiz Card Container */
+        .quiz-wrapper {
+            background: var(--transparent-bg);
+            border: 1px solid #d0d7de;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .question-card {
+            display: none;
+        }
+
+        .question-card.active {
+            display: block;
+        }
+
+        .question-title {
+            font-size: 1.05rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            color: var(--text-color);
+            line-height: 1.4;
+        }
+
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            background: transparent;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .option-item:hover {
+            background: rgba(0,0,0,0.02);
+            border-color: #888;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .option-item.selected {
+            background: rgba(56, 142, 60, 0.08);
+            border-color: var(--secondary-green);
+            font-weight: bold;
+        }
+
+        /* Quiz Navigation */
+        .quiz-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .nav-quiz-btn {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid #666;
+            padding: 6px 16px;
+            font-size: 0.9rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .nav-quiz-btn:hover:not(:disabled) {
+            background: #333;
+            color: white;
+        }
+        .nav-quiz-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Results Card */
+        .results-card {
+            display: none;
+            background: var(--transparent-bg);
+            border: 1px solid #d0d7de;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+        }
+
+        .results-card h2 {
+            color: var(--secondary-green);
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+        }
+
+        .score-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin: 12px 0;
+        }
+
+        /* Footer */
+        footer {
+            background: transparent;
+            border-top: 1px solid #d0d7de;
+            color: var(--text-color);
+            text-align: center;
+            padding: 15px;
+            margin-top: auto;
+            font-size: 0.85rem;
+        }
+
+        footer p {
+            margin: 2px 0;
+        }
+
+        /* Clean Print Layout */
+        @media print {
+            body { background: white !important; }
+            #loaderOverlay, #authModal, nav, .grid-section, .quiz-nav, .btn, footer { display: none !important; }
+            .container { max-width: 100% !important; margin: 0 !important; padding: 0 !important; }
+            .header-card, .quiz-wrapper, .results-card { border: none !important; background: transparent !important; }
+            .question-card { display: block !important; page-break-inside: avoid; margin-bottom: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Loader -->
+    <div id="loaderOverlay">
+        <div class="loader-spinner"></div>
+        <h2 style="font-size: 1.2rem; font-weight: normal;">IBA Public School Sukkur</h2>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal">
+        <div class="auth-card">
+            <img src="logo.png" alt="Logo" onerror="this.style.display='none'">
+            <h3 style="margin-top:0;">Candidate Authentication</h3>
+            <p style="font-size: 0.9rem; color: #555;">Enter your Full Name to begin the assessment.</p>
+            <input type="text" id="studentNameInput" placeholder="Ex: Abdul Razak" autocomplete="off">
+            <button class="btn" style="width: 100%; background: #1976d2; color: white;" onclick="initializeSession()">Proceed to Exam</button>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-brand">
+            <img src="logo.png" alt="Logo" class="nav-logo" onerror="this.style.display='none'">
+            <span class="nav-title">Monthly Test - Nov 2026</span>
+        </div>
+        <div class="nav-controls">
+            <div class="timer-display" id="timer">40:00</div>
+            <button class="btn" id="startBtn" onclick="startTest()">Start</button>
+            <button class="btn btn-stop" id="stopBtn" onclick="stopTest()" disabled>Stop</button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Header Card -->
+        <div class="header-card">
+            <img src="logo.png" alt="Logo" class="center-logo" onerror="this.style.display='none'">
+            <h1>IBA PUBLIC SCHOOL SUKKUR</h1>
+            <h2>Higher Secondary School Certificate (Grade XII) — Computer Science</h2>
+            <div><span class="student-badge" id="displayStudentName">Candidate: Not Authenticated</span></div>
+        </div>
+
+        <!-- Grid Section (Video placed prominently for prior guidance) -->
+        <div class="grid-section">
+            <div class="card-panel">
+                <h3>Exam Guidance & Prior Tutorial</h3>
+                <div class="video-container">
+                    <video id="tutorialVideo" preload="metadata" onerror="this.style.display='none'; document.getElementById('videoFallback').style.display='flex';">
+                        <source src="tutorial.mp4" type="video/mp4">
+                    </video>
+                    <div id="videoFallback" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; align-items:center; justify-content:center; text-align:center; padding:10px; font-size:0.85rem;">
+                        Tutorial Guide: Review questions carefully and manage your 40-minute timeframe effectively.
+                    </div>
+                </div>
+                <div class="video-controls">
+                    <button class="video-btn" onclick="playVideo()">Play</button>
+                    <button class="video-btn" onclick="pauseVideo()">Pause</button>
+                    <button class="video-btn" onclick="replayVideo()">Replay</button>
+                    <button class="video-btn" onclick="skipTutorial()">Skip & Start</button>
+                </div>
+            </div>
+
+            <div class="card-panel">
+                <h3>Academic Inspiration</h3>
+                <div class="motivation-content">
+                    <img id="motivationImg" src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80" alt="Inspiration" class="motivation-img">
+                    <p class="motivation-quote" id="motivationQuote">"Code is like humor. When you have to explain it, it’s bad." — Cory House</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz Wrapper -->
+        <div class="quiz-wrapper" id="quizContainer">
+            <div id="welcomeMessage" style="text-align: center; padding: 10px;">
+                <p>Click the <strong>'Start'</strong> button in the navigation bar to begin the 40-minute test. All 50 questions are presented below.</p>
+            </div>
+            <div id="questionsArea" style="display:none;"></div>
+            <div class="quiz-nav" id="quizNav" style="display:none;">
+                <button class="nav-quiz-btn" id="prevBtn" onclick="prevQuestion()" disabled>Previous</button>
+                <span id="questionCounter" style="font-size: 0.9rem;">Question 1 of 50</span>
+                <button class="nav-quiz-btn" id="nextBtn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card" id="resultsCard">
+            <h2>Test Submitted Successfully</h2>
+            <p>Assessment completed.</p>
+            <div class="score-display" id="scoreDisplay">Your Score: -- / 50</div>
+            <p id="gradeFeedback" style="font-size: 0.95rem;"></p>
+            <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: center;">
+                <button class="btn" onclick="downloadPDFReport()">Download PDF Report (.pdf)</button>
+                <button class="btn" onclick="location.reload()">Retake Test</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p><strong>Instructor:</strong> Abdul Razak | <strong>Subject:</strong> Computer Science</p>
+        <p>Subject Specialist & MPhil Scholar, IBA Public School Sukkur</p>
+        <p>&copy; 2026 IBA Public School Sukkur</p>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loaderOverlay');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.remove(), 400);
+            }, 1500);
+        });
+
+        let studentFullName = "";
+
+        function initializeSession() {
+            const nameInput = document.getElementById('studentNameInput').value.trim();
+            if (!nameInput) {
+                alert("Please enter your Full Name.");
+                return;
+            }
+            studentFullName = nameInput;
+            document.getElementById('displayStudentName').innerText = `Candidate: ${studentFullName}`;
+            document.getElementById('authModal').style.display = 'none';
+        }
+
+        const vid = document.getElementById('tutorialVideo');
+        function playVideo() { vid.play().catch(() => {}); }
+        function pauseVideo() { vid.pause(); }
+        function replayVideo() { vid.currentTime = 0; vid.play().catch(() => {}); }
+        function skipTutorial() { vid.pause(); window.scrollTo({ top: document.getElementById('quizContainer').offsetTop - 50, behavior: 'smooth' }); }
+
+        const quotes = [
+            { img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=600&q=80", text: "\"Code is like humor. When you have to explain it, it’s bad.\" — Cory House" },
+            { img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80", text: "\"Simplicity is the soul of efficiency.\" — Austin Freeman" },
+            { img: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80", text: "\"Programs must be written for people to read...\" — Harold Abelson" }
+        ];
+        let qIdx = 0;
+        setInterval(() => {
+            qIdx = (qIdx + 1) % quotes.length;
+            document.getElementById('motivationImg').src = quotes[qIdx].img;
+            document.getElementById('motivationQuote').innerText = quotes[qIdx].text;
+        }, 6000);
+
+        const questionsData = [
+            { q: "Which of the following components correctly constitutes the signature of a user-defined function in Python?", options: ["A. Function name, local variables, and return value.", "B. Function name, arguments, and return value.", "C. Function definition, body, and call statement.", "D. Function call, parameters, and global scope."], answer: 1, explanation: "A function signature strictly consists of the function name, parameter/argument list, and return type definition." },
+            { q: "What is the primary software engineering advantage of defining reusable user-defined functions in a program?", options: ["A. They convert high-level code directly into hardware microcode.", "B. They reduce code redundancy, enhance modularity, and simplify debugging.", "C. They remove all memory allocation requirements during execution.", "D. They automatically eliminate run-time logical errors."], answer: 1, explanation: "Functions promote modularity and the DRY principle, reducing code duplication." },
+            { q: "Which of the following is considered a built-in (predefined) function in Python?", options: ["A. calculate_tax()", "B. print()", "C. find_factorial()", "D. merge_nodes()"], answer: 1, explanation: "print() is a standard built-in function bundled directly within Python's core runtime." },
+            { q: "What is the role of the return statement in a Python function?", options: ["A. To restart the function from line 1.", "B. To send a computed result back to the calling statement and terminate function execution.", "C. To force the Python interpreter to delete local memory permanently.", "D. To convert variables into string format."], answer: 1, explanation: "The return statement passes output data back to the caller and immediately exits the function scope." },
+            { q: "If a Python function executes completely without encountering a return statement, what value is returned to the caller by default?", options: ["A. 0", "B. False", "C. None", "D. An empty string ''"], answer: 2, explanation: "Python functions implicitly return the singleton object None if no return statement is executed." },
+            { q: "A variable declared inside a Python function body is known as a:", options: ["A. Global variable", "B. Local variable, accessible only within that specific function", "C. Static persistent pointer", "D. Universal system attribute"], answer: 1, explanation: "Variables scoped inside function definitions are local variables existing only during execution of that function." },
+            { q: "Which Python keyword is used inside a function to modify a variable declared in the global scope?", options: ["A. local", "B. global", "C. extern", "D. shared"], answer: 1, explanation: "The global keyword tells the interpreter to bind the identifier to the module-level global namespace." },
+            { q: "When a function parameter is assigned a default value in Python, what happens if the caller omits that argument during the function call?", options: ["A. Python raises a TypeError at runtime.", "B. The parameter automatically defaults to None.", "C. The interpreter uses the pre-specified default value.", "D. Program execution terminates immediately."], answer: 2, explanation: "Default arguments supply the pre-specified fallback value when arguments are omitted by the caller." },
+            { q: "Consider the following Python code snippet:\ndef check(x=10, y=20):\n    return x + y\nprint(check(5))", options: ["A. 15", "B. 25", "C. 30", "D. 5"], answer: 0, explanation: "x takes 5 (positional override), while y defaults to 20, resulting in 5 + 20 = 15." },
+            { q: "In Python, passing arguments by reference means:", options: ["A. Passing a copy of the primitive value so the original remains untouched.", "B. Passing references (memory addresses) of mutable objects like lists or dictionaries, allowing modifications to affect the caller.", "C. Generating new hardware registers for each argument.", "D. Encrypting variable data during transmission."], answer: 1, explanation: "Python passes object references by assignment; mutable objects can be modified in place by the callee." },
+            { q: "What is Object-Oriented Programming (OOP)?", options: ["A. A programming paradigm centered around functions and mathematical computations.", "B. A programming model that organizes software design around data (objects) rather than functions and logic.", "C. A low-level assembly instruction set.", "D. A database querying language."], answer: 1, explanation: "OOP models software around interacting objects encapsulating state and behavior." },
+            { q: "A user-defined blueprint or template that specifies attributes and methods common to all instances of that type is called a:", options: ["A. Object", "B. Class", "C. Module", "D. Package"], answer: 1, explanation: "A class serves as the master blueprint or template for creating object instances." },
+            { q: "A concrete instance of a class loaded into memory, possessing its own unique state while sharing behavior defined by its class, is an:", options: ["A. Object", "B. Interface", "C. Abstract data type", "D. Function signature"], answer: 0, explanation: "An object is an instantiated realization of a class allocated in heap memory." },
+            { q: "Variables declared within a class that hold the state or characteristics of the entity are known as:", options: ["A. Methods", "B. Attributes (Data Members)", "C. Local variables", "D. Parameters"], answer: 1, explanation: "Class variables or instance variables representing characteristics are termed attributes or data members." },
+            { q: "Functions defined inside a class that define operations or behaviors that an object can execute are called:", options: ["A. Attributes", "B. Methods (Member Functions)", "C. Global procedures", "D. Constructors"], answer: 1, explanation: "Member functions encapsulated within class bodies are referred to as methods." },
+            { q: "What are access specifiers in Object-Oriented Programming?", options: ["A. Keywords that dictate file input/output routing.", "B. Conventions or rules determining the visibility and accessibility of class members.", "C. Hardware CPU registers allocated for class execution.", "D. Network security protocols for connecting classes over IP."], answer: 1, explanation: "Access specifiers govern where class members can be accessed or modified." },
+            { q: "How are public members characterized in Python classes?", options: ["A. Prefixed with a double underscore (__).", "B. Prefixed with a single underscore (_).", "C. Declared without any leading underscores, accessible from anywhere.", "D. Enforced strictly by compile-time keywords."], answer: 2, explanation: "Public attributes have no leading underscores and are universally accessible." },
+            { q: "How is a protected member represented and treated in Python?", options: ["A. Prefixed with a single underscore (_), intended by convention for internal use within the class and its subclasses.", "B. Completely blocked from external access by the Python compiler.", "C. Automatically encrypted in memory.", "D. Shared globally across all modules."], answer: 0, explanation: "A single underscore (_) signals a protected member by developer convention." },
+            { q: "How are private access members represented and enforced in Python compared to public members?", options: ["A. Using the 'private' keyword enforced strictly by the compiler.", "B. Using double underscores (__), which triggers name mangling at runtime.", "C. Using memory pointers that cause kernel segmentation faults.", "D. Using read-only hardware registers."], answer: 1, explanation: "Private members use double underscores (__), triggering runtime name mangling." },
+            { q: "What is the primary mechanism and purpose of name mangling in Python classes?", options: ["A. Encrypting source code for commercial distribution.", "B. Rewriting private attributes internally to _ClassName__attribute to prevent subclass collision and accidental overrides.", "C. Compiling Python bytecode into native machine instructions.", "D. Compressing object dictionaries to save RAM."], answer: 1, explanation: "Name mangling rewrites __attr to _Class__attr to prevent subclass naming collisions." },
+            { q: "Which OOP pillar allows a derived class to inherit attributes and methods from an existing base class?", options: ["A. Encapsulation", "B. Polymorphism", "C. Inheritance", "D. Abstraction"], answer: 2, explanation: "Inheritance enables child classes to inherit attributes and methods from parent classes." },
+            { q: "What is encapsulation in Python programming?", options: ["A. Bundling data and methods into a single unit while restricting direct external access to internal state.", "B. Compiling Python code into machine binary format.", "C. Executing multiple threads simultaneously across CPU cores.", "D. Converting relational tables into flat CSV files."], answer: 0, explanation: "Encapsulation binds state and behavior together while guarding internal state invariants." },
+            { q: "What is polymorphism in OOP?", options: ["A. The ability of different classes to respond to the same method call with specialized behaviors.", "B. Storing multiple copies of an object in memory.", "C. Converting data types implicitly.", "D. Restricting class instantiation."], answer: 0, explanation: "Polymorphism allows uniform interfaces to execute distinct class-specific behaviors." },
+            { q: "What is the primary function of a constructor (__init__) in Python classes?", options: ["A. To delete objects and deallocate heap memory.", "B. To initialize object state and assign values to instance attributes upon instantiation.", "C. To establish database connections.", "D. To execute exception handling routines."], answer: 1, explanation: "__init__ initializes newly instantiated object attributes." },
+            { q: "What is the function of a destructor (__del__) in Python?", options: ["A. Automatically called when an object's reference count drops to zero to perform cleanup operations.", "B. Compiling source files into bytecode.", "C. Forcing garbage collection of global variables.", "D. Terminating the operating system kernel."], answer: 0, explanation: "__del__ executes cleanup tasks when object reference counts reach zero." },
+            { q: "Differentiate between method overloading and method overriding in OOP:", options: ["A. Overloading occurs within the same class with different signatures; overriding redefines a parent method in a child class.", "B. Overloading happens in inheritance; overriding happens in local functions.", "C. There is no difference between them.", "D. Overloading is handled by the OS while overriding is handled by Python."], answer: 0, explanation: "Overloading defines multiple methods with same name in one class; overriding redefines parent methods in child classes." },
+            { q: "Which type of inheritance involves a child class inheriting from multiple parent classes?", options: ["A. Single inheritance", "B. Multilevel inheritance", "C. Multiple inheritance", "D. Hierarchical inheritance"], answer: 2, explanation: "Multiple inheritance allows a subclass to inherit from two or more superclasses." },
+            { q: "In Python, how are elements of a one-dimensional list indexed and arranged in computer memory?", options: ["A. Stored in non-contiguous random blocks with arbitrary string keys.", "B. Stored as an array of contiguous pointers referencing scattered heap objects, accessed via zero-based integer index numbers.", "C. Stored in a hierarchical tree structure with parent-child pointers.", "D. Stored exclusively as immutable constant tuples."], answer: 1, explanation: "Lists store contiguous pointer arrays pointing to heap-allocated objects accessed via 0-based integer indexes." },
+            { q: "What is the primary purpose of storing elements in an ordered list?", options: ["A. It compresses physical RAM consumption by 50%.", "B. It guarantees that elements can be visited in a predictable, deterministic sequence and enables direct indexing.", "C. It automatically encrypts data elements against unauthorized access.", "D. It prevents lists from ever changing their data type."], answer: 1, explanation: "Ordered lists preserve insertion sequence and permit predictable traversal and indexing." },
+            { q: "Which built-in list method is used to add a new item to the end of a Python list?", options: ["A. add()", "B. insert()", "C. append()", "D. push()"], answer: 2, explanation: "append() inserts elements at the tail of a list." },
+            { q: "Consider a Python list nums = [12, 45, 7, 89, 23]. What will be the output of len(nums)?", options: ["A. 4", "B. 5", "C. 6", "D. 0"], answer: 1, explanation: "len() returns the total element count, which is 5." },
+            { q: "Which list operation removes and returns an item at a given index (defaulting to the last item)?", options: ["A. remove()", "B. pop()", "C. clear()", "D. delete()"], answer: 1, explanation: "pop() extracts and returns an item at a specified index." },
+            { q: "What is the time complexity for accessing any element by index in a Python list?", options: ["A. O(n)", "B. O(log n)", "C. O(1)", "D. O(n^2)"], answer: 2, explanation: "Index-based lookups in Python lists execute in O(1) constant time." },
+            { q: "What is a dictionary in Python programming?", options: ["A. An ordered collection indexed strictly by integers from 0 to n-1.", "B. A mutable collection used to store data in unique key-value pairs.", "C. A fixed-size array containing identical primitive data types.", "D. A compiled function module imported from system libraries."], answer: 1, explanation: "Dictionaries store elements as unique key-value pairs backed by hash tables." },
+            { q: "Under the hood, how are dictionaries implemented in standard CPython to achieve fast lookups?", options: ["A. As singly linked lists requiring linear traversal.", "B. Using hash tables that map keys to memory addresses for O(1) average time complexity.", "C. As binary search trees with automatic balancing.", "D. As sequential text files stored on disk."], answer: 1, explanation: "CPython dictionaries use hash tables for O(1) average lookup performance." },
+            { q: "Which dictionary method safely retrieves a value using a key, returning a default value (like None) instead of raising a KeyError if the key is missing?", options: ["A. dict.fetch()", "B. dict.search()", "C. dict.get()", "D. dict.lookup()"], answer: 2, explanation: "dict.get() safely returns a default fallback if a key is absent." },
+            { q: "How do you find a value in a Python dictionary using a target key?", options: ["A. value = my_dict[key] or value = my_dict.get(key)", "B. value = my_dict.search(key)", "C. value = search_index(my_dict, key)", "D. value = my_dict.find_value(key)"], answer: 0, explanation: "Bracket lookup or .get() retrieves dictionary values by key." },
+            { q: "Which method returns a view object displaying a list of a dictionary's key-value tuple pairs?", options: ["A. dict.keys()", "B. dict.values()", "C. dict.items()", "D. dict.pairs()"], answer: 2, explanation: "dict.items() yields key-value tuple pairs." },
+            { q: "What is the primary importance of Disk I/O in Python programming?", options: ["A. It replaces RAM entirely for faster mathematical computation.", "B. It enables persistent data storage across secondary storage devices since RAM is volatile.", "C. It compiles Python bytecode directly into machine language.", "D. It encrypts all network packets automatically."], answer: 1, explanation: "Disk I/O provides persistent storage across secondary media because RAM is volatile." },
+            { q: "Which file operation mode is used in Python to open an existing text file for writing new data while appending it to the end without overwriting existing content?", options: ["A. 'r' (Read mode)", "B. 'w' (Write mode)", "C. 'a' (Append mode)", "D. 'x' (Exclusive creation mode)"], answer: 2, explanation: "'a' mode opens files for appending data to the end without truncation." },
+            { q: "What is the function of the open() method in Python file handling?", options: ["A. It permanently deletes a file from secondary storage.", "B. It allocates system resources and establishes a stream connection between the script and the file on disk.", "C. It converts text files into binary compiled modules.", "D. It checks for syntax errors in a script."], answer: 1, explanation: "open() creates a stream connection and returns a file handler object." },
+            { q: "Which file method is used to ensure all buffered output data is written to disk and system file descriptors are safely released?", options: ["A. file.flush()", "B. file.close()", "C. file.terminate()", "D. file.clear()"], answer: 1, explanation: "close() flushes write buffers and releases OS file descriptors." },
+            { q: "When opening a file using the with statement in Python (context manager), what is the primary benefit?", options: ["A. It encrypts the file contents automatically.", "B. It guarantees that the file is automatically and safely closed once the block of code is exited, even if exceptions occur.", "C. It increases read/write speeds by 10x.", "D. It bypasses OS file permissions."], answer: 1, explanation: "Context managers guarantee resource cleanup and safe file closure upon block exit." },
+            { q: "What will be the output of the following dictionary lookup code?\ndata = {'score': 95, 'grade': 'A'}\nprint(data.get('subject', 'Not Found'))", options: ["A. 95", "B. A", "C. Not Found", "D. KeyError: 'subject'"], answer: 2, explanation: "Since 'subject' is missing, .get() returns the default string 'Not Found'." },
+            { q: "Which of the following built-in functions returns the number of items in a list or dictionary?", options: ["A. size()", "B. count()", "C. len()", "D. length()"], answer: 2, explanation: "len() computes container element counts." },
+            { q: "In Python, which term describes variables that are created inside a function and cannot be accessed outside of it?", options: ["A. Global variables", "B. Local variables", "C. Static variables", "D. Instance variables"], answer: 1, explanation: "Local variables are restricted strictly to their defining function scope." },
+            { q: "Which keyword allows a user-defined function to return multiple values bundled together?", options: ["A. multi", "B. return (returning a tuple/list)", "C. yield_all", "D. bundle"], answer: 1, explanation: "Multiple values are returned bundled implicitly as a tuple." },
+            { q: "What does the append() method do when called on a Python list?", options: ["A. Inserts an element at the very beginning of the list.", "B. Adds its argument as a single element at the end of the list.", "C. Combines two separate lists element by element.", "D. Sorts the list in descending order."], answer: 1, explanation: "append() adds its argument as a single trailing element." },
+            { q: "Which of the following accurately describes Python dictionaries?", options: ["A. Keys must be immutable and unique; values can be of any data type and duplicated.", "B. Keys must be mutable integers; values must be strings.", "C. Keys and values must both be strictly integers.", "D. Keys are accessed by numerical index numbers rather than identifiers."], answer: 0, explanation: "Dictionary keys must be hashable/immutable and unique, while values can be arbitrary." },
+            { q: "What happens if you attempt to read from a file opened in 'w' (write) mode?", options: ["A. The file reads normally.", "B. Python raises an UnsupportedOperation or I/O error because write mode does not permit reading.", "C. The file is deleted instantly.", "D. All contents are printed to the console."], answer: 1, explanation: "Write ('w') and append ('a') modes do not support read operations in standard file handlers." }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = new Array(questionsData.length).fill(null);
+        let timerInterval = null;
+        let timeLeft = 40 * 60;
+        let testActive = false;
+
+        function renderQuestions() {
+            const area = document.getElementById('questionsArea');
+            area.innerHTML = '';
+
+            questionsData.forEach((qObj, index) => {
+                const card = document.createElement('div');
+                card.className = `question-card ${index === 0 ? 'active' : ''}`;
+                card.id = `qCard_${index}`;
+
+                let html = `<div class="question-title">Q${index + 1}. ${qObj.q.replace(/\n/g, '<br>')}</div>`;
+                html += `<ul class="options-list">`;
+                qObj.options.forEach((opt, optIdx) => {
+                    const isChecked = userAnswers[index] === optIdx ? 'checked' : '';
+                    const isSelectedClass = userAnswers[index] === optIdx ? 'selected' : '';
+                    html += `<li class="option-item ${isSelectedClass}" onclick="selectOption(${index}, ${optIdx})">
+                        <label style="cursor: pointer; display: block; width: 100%;">
+                            <input type="radio" name="q_${index}" value="${optIdx}" ${isChecked} onclick="event.stopPropagation(); selectOption(${index}, ${optIdx})">
+                            ${opt}
+                        </label>
+                    </li>`;
+                });
+                html += `</ul>`;
+                card.innerHTML = html;
+                area.appendChild(card);
+            });
+        }
+
+        function selectOption(qIdx, optIdx) {
+            if (!testActive) return;
+            userAnswers[qIdx] = optIdx;
+            
+            const card = document.getElementById(`qCard_${qIdx}`);
+            const items = card.querySelectorAll('.option-item');
+            items.forEach((item, idx) => {
+                const radio = item.querySelector('input[type="radio"]');
+                if (idx === optIdx) {
+                    item.classList.add('selected');
+                    radio.checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    radio.checked = false;
+                }
+            });
+        }
+
+        function startTest() {
+            if (testActive) return;
+            if (!studentFullName) {
+                alert("Please authenticate with your Full Name first!");
+                return;
+            }
+            testActive = true;
+
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('questionsArea').style.display = 'block';
+            document.getElementById('quizNav').style.display = 'flex';
+
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('stopBtn').disabled = false;
+
+            renderQuestions();
+            updateNavButtons();
+
+            timerInterval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    stopTest(true);
+                    return;
+                }
+                timeLeft--;
+                let mins = Math.floor(timeLeft / 60);
+                let secs = timeLeft % 60;
+                document.getElementById('timer').innerText = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
+
+        function stopTest(isTimeout = false) {
+            if (!testActive && !isTimeout) return;
+            testActive = false;
+            clearInterval(timerInterval);
+
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+
+            let score = 0;
+            questionsData.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) score++;
+            });
+
+            document.getElementById('quizContainer').style.display = 'none';
+            const resCard = document.getElementById('resultsCard');
+            resCard.style.display = 'block';
+
+            if (isTimeout) {
+                resCard.querySelector('h2').innerText = "Time's Up! Test Auto-Submitted";
+            }
+
+            document.getElementById('scoreDisplay').innerText = `Your Score: ${score} / 50`;
+            
+            let percentage = (score / 50) * 100;
+            let feedback = "";
+            if (percentage >= 80) feedback = "Grade: A+ (Outstanding Performance!)";
+            else if (percentage >= 70) feedback = "Grade: A (Very Good)";
+            else if (percentage >= 60) feedback = "Grade: B (Good)";
+            else if (percentage >= 50) feedback = "Grade: C (Satisfactory)";
+            else feedback = "Grade: F (Needs Improvement)";
+
+            document.getElementById('gradeFeedback').innerText = feedback;
+        }
+
+        function showQuestion(index) {
+            const cards = document.querySelectorAll('.question-card');
+            cards.forEach((card, idx) => {
+                if (idx === index) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+            currentQuestion = index;
+            document.getElementById('questionCounter').innerText = `Question ${currentQuestion + 1} of ${questionsData.length}`;
+            updateNavButtons();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questionsData.length - 1) {
+                showQuestion(currentQuestion + 1);
+            } else {
+                if (confirm("Are you sure you want to submit your test?")) {
+                    stopTest();
+                }
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                showQuestion(currentQuestion - 1);
+            }
+        }
+
+        function updateNavButtons() {
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            prevBtn.disabled = currentQuestion === 0;
+            if (currentQuestion === questionsData.length - 1) {
+                nextBtn.innerText = "Submit Test";
+            } else {
+                nextBtn.innerText = "Next";
+            }
+        }
+
+        // Well-Structured PDF Report Generation with Proper Margins, Padding & Transparent Backgrounds
+        function downloadPDFReport() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            
+            let score = 0;
+            questionsData.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) score++;
+            });
+
+            // Page Setup & Margins
+            const margin = 15;
+            const pageWidth = 210;
+            const printableWidth = pageWidth - (margin * 2);
+            let y = 15;
+
+            // Header Title
+            doc.setFont("times", "bold");
+            doc.setFontSize(14);
+            doc.setTextColor(25, 118, 210);
+            doc.text("IBA PUBLIC SCHOOL SUKKUR", pageWidth / 2, y, { align: "center" });
+            y += 6;
+
+            doc.setFontSize(10);
+            doc.setFont("times", "normal");
+            doc.setTextColor(60, 60, 60);
+            doc.text("Higher Secondary School Certificate (Grade XII) - Computer Science", pageWidth / 2, y, { align: "center" });
+            y += 5;
+            doc.text("Monthly Assessment Report - November 2026", pageWidth / 2, y, { align: "center" });
+            y += 10;
+
+            // Metadata Box (Simple borders & transparent padding)
+            doc.setDrawColor(150, 150, 150);
+            doc.setLineWidth(0.3);
+            doc.rect(margin, y, printableWidth, 18);
+            
+            doc.setFont("times", "bold");
+            doc.setFontSize(9.5);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Candidate Name: ${studentFullName}`, margin + 4, y + 6);
+            doc.text(`Instructor: Abdul Razak (Subject Specialist)`, margin + 105, y + 6);
+            doc.text(`Timestamp: ${new Date().toLocaleString()}`, margin + 4, y + 13);
+            doc.text(`Overall Score: ${score} / 50 (${((score/50)*100).toFixed(1)}%)`, margin + 105, y + 13);
+            
+            y += 24;
+
+            doc.setFont("times", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(0, 0, 0);
+            doc.text("Itemized Evaluation & Explanations", margin, y);
+            y += 6;
+
+            doc.setFontSize(9);
+            questionsData.forEach((q, idx) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 15;
+                }
+                
+                doc.setFont("times", "bold");
+                doc.setTextColor(0, 0, 0);
+                const userAnsIdx = userAnswers[idx];
+                const isCorrect = userAnsIdx === q.answer;
+                const statusTxt = userAnsIdx === null ? "Unanswered" : (isCorrect ? "Correct" : "Incorrect");
+                
+                // Wrap question text
+                const qText = `Q${idx + 1}: ${q.q}`;
+                const splitQ = doc.splitTextToSize(qText, printableWidth);
+                doc.text(splitQ, margin, y);
+                y += (splitQ.length * 4.5);
+                
+                doc.setFont("times", "normal");
+                const studentChoice = userAnsIdx !== null ? q.options[userAnsIdx] : "None";
+                const correctChoice = q.options[q.answer];
+                doc.text(`Your Answer: ${studentChoice} | Correct Answer: ${correctChoice} [Status: ${statusTxt}]`, margin + 4, y);
+                y += 4.5;
+                
+                doc.setTextColor(70, 70, 70);
+                const explText = `Explanation: ${q.explanation}`;
+                const splitExpl = doc.splitTextToSize(explText, printableWidth - 4);
+                doc.text(splitExpl, margin + 4, y);
+                y += (splitExpl.length * 4.5) + 4;
+                doc.setTextColor(0, 0, 0);
+            });
+
+            doc.save(`Computer_Science_Test_Report_${studentFullName.replace(/\s+/g, '_')}.pdf`);
+        }
+    </script>
+</body>
+</html>
